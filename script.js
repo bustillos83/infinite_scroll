@@ -1,12 +1,25 @@
 const imageContainer = document.getElementById("image-container");
 const loader = document.getElementById("loader");
 
+let ready = false;
+let imagesLoaded = 0;
+let totalImages = 0;
 let photosArray = [];
 
 // Unsplash API
-const count = 10;
+const count = 30;
 const apiKey = "YLUdmhtUeOMkS06DwdS_uhqxtnSow5nXHA7Fe7yPsu4";
 const apiUrl = `https://api.unsplash.com/photos/random/?client_id=${apiKey}&count=${count}`;
+
+//check if all images were loaded
+function imageLoaded() {
+  console.log("image loaded");
+  imagesLoaded++;
+  if (imagesLoaded === totalImages) {
+    ready = true;
+    console.log("ready =", ready);
+  }
+}
 //Helper function to set attributes on DOM element
 function setAttributes(element, attributes) {
   for (const key in attributes) {
@@ -16,6 +29,8 @@ function setAttributes(element, attributes) {
 
 // Create elements for Links and Photos, add to DOM
 function displayPhotos() {
+  totalImages = photosArray.length;
+  console.log("total images", totalImages);
   //Run function for each object in photoArray
   photosArray.forEach((photo) => {
     //create <a> to link to Unsplash
@@ -33,6 +48,8 @@ function displayPhotos() {
       alt: photo.alt_description,
       title: photo.alt_description,
     });
+    //event listener, check when each is finished loading
+    img.addEventListener("load", imageLoaded);
     //put <img> inside <a> then put bnoth inside the imageContainer Element
     item.appendChild(img);
     imageContainer.appendChild(item);
